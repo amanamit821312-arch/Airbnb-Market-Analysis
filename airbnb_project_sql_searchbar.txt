@@ -1,0 +1,170 @@
+select * from Airbnb_Open_Project limit 5
+
+-- Objective
+-- Pricing trends across neighborhoods
+-- Room type popularity
+-- Host behavior and guest activity
+-- Booking pattern and availability
+
+--  Pricing trends across neighborhoods
+ 
+ select neighbourhood_gr, neighbourhood, avg(price) as avg_price
+ from Airbnb_Open_Project
+ group by  neighbourhood_gr , neighbourhood
+ order by avg_price desc
+ 
+ 
+ -- INSIGHT
+ -- New Drop and Chelsea has the highest avg_price
+ -- Woodside has the lowest avg_price 
+ 
+ -- Which property is giving the New Drop and Chelsea has the highest avg_price
+select id,name,neighbourhood,price
+from Airbnb_Open_Project
+WHERE neighbourhood IN ('New Drop')
+order by price DESC
+
+
+-- Room type popularity
+
+select room_type, COUNT(DISTINCT id) as count_properties,
+round(avg(review_rate_numb),3) as avg_rate_number,
+round(avg(price),2) AS avg_price
+from Airbnb_Open_Project
+group by 1
+order by count_properties DESC
+
+-- Hosts prefer putting entire homes but customers like hotel rooms more 
+-- Probable reason being that hotels are well built compared to homes and they are taken care of more 
+
+-- Host behavour and guest activity
+
+-- Host identity
+-- Service fee 
+-- Instant bookable policy 
+-- Cancellation policy 
+-- Review rate number 
+-- availability_365 
+
+-- Host identity 
+select host_identity_ve, count(distinct id) as cnt_properties 
+from Airbnb_Open_Project 
+group by host_identity_ve
+
+-- Half of the host identity are not confirmed 
+
+-- Service fee 
+--ASSUMPTION 
+-- Service fee > 500 its high 
+-- Service fee between 200 to 500 its mid 
+-- Service fee < 200 its low 
+
+select 
+count(case when service_fee >500 then service_fee end ) as high_service,
+count(case when service_fee BETWEEN 200 and 500 then service_fee END ) as mid_service,
+count(case when service_fee < 200 then service_fee end ) as low_service
+from Airbnb_Open_Project
+
+-- high_service is 0
+-- mid_service is 17948
+-- low_service is 84110
+
+
+-- Instant bookable policy
+
+SELECT 
+    instant_bookable,
+    COUNT(*) AS total_listings
+FROM Airbnb_Open_Project
+GROUP BY instant_bookable
+
+-- instant_bookable police is around fifty percent  host is true and another fifty percent host is false 
+
+-- Cancellation policy  
+SELECT 
+    cancellation_pol,
+    COUNT(*) AS total_listings
+FROM Airbnb_Open_Project
+GROUP BY cancellation_pol;
+
+-- cancellation policy 
+-- Flexible= 33891
+-- Moderate = 34162
+-- Strict = 33929 
+
+-- Review rate number
+-- ASSUMPTION 
+-- High → 4.5 and above
+-- Mid → 3 to 4.4
+-- Low → below 3
+SELECT
+    COUNT(CASE WHEN review_rate_numb>= 4.5 THEN 1 END) AS high_rating,
+    COUNT(CASE WHEN review_rate_numb BETWEEN 3 AND 4.4 THEN 1 END) AS mid_rating,
+    COUNT(CASE WHEN review_rate_numb < 3 THEN 1 END) AS low_rating
+FROM Airbnb_Open_Project;
+
+-- HIGH_RATING = 23251 
+-- MID_RATING = 46330
+-- LOW_RATING = 32158
+
+
+-- availability_365
+-- Assumption 
+-- High availability → more than 250 days
+-- Mid availability → 100–250 days
+-- Low availability → less than 100 days
+
+SELECT
+    COUNT(CASE WHEN availability_365 > 250 THEN 1 END) AS high_availability,
+    COUNT(CASE WHEN availability_365 BETWEEN 100 AND 250 THEN 1 END) AS mid_availability,
+    COUNT(CASE WHEN availability_365 < 100 THEN 1 END) AS low_availability
+FROM Airbnb_Open_Project;
+
+-- high_availability = 27826
+-- mid_availability = 22498
+-- low_availability = 51286
+
+
+-- Price category
+-- ASSUMPTION 
+-- High price → above 500
+-- Mid price → 200 to 500
+-- Low price → below 200
+
+SELECT
+    COUNT(CASE WHEN price > 500 THEN 1 END) AS high_price,
+    COUNT(CASE WHEN price BETWEEN 200 AND 500 THEN 1 END) AS mid_price,
+    COUNT(CASE WHEN price < 200 THEN 1 END) AS low_price
+FROM Airbnb_Open_Project;
+
+-- HIGH_PRICE_RANGE= 62264
+-- MID_PRICE_RANGE = 26691
+-- LOW_PRICE-RANGE = 13103
+
+
+-- Room_type 
+SELECT 
+    room_type,
+    COUNT(*) AS total_listings
+FROM Airbnb_Open_Project
+GROUP BY room_type
+ORDER BY total_listings DESC;
+
+--Entire home = 53429 
+-- Private room = 46306
+-- Shared room = 2208
+-- Hotel room = 115
+
+
+
+
+
+
+
+
+
+
+
+
+
+
